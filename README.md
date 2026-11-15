@@ -42,3 +42,8 @@ Tes scores et notes par niveau et tes réglages sont enregistrés par NeoDex, sa
 Dans NeoDex : **NeoStore → À découvrir → Valse → Installer**.
 
 Développer un plugin : voir le [SDK NeoDex](https://github.com/NDesumeur/neodex-sdk).
+
+## Nouveautés de la version 1.1.0
+
+- **Manette** : la croix, A, B, X, Y et les gâchettes hautes posent l'astre ; Start lance le morceau (A aussi, hors partie) ; Select met en pause.
+- **Courbe de précision** sur l'écran de fin : ta justesse tout au long du morceau, avec les notes ratées marquées en rouge dessous, pour voir où tu as décroché.

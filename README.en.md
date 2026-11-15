@@ -42,3 +42,8 @@ Your scores and grades per level and your settings are stored by NeoDex, backed 
 In NeoDex: **NeoStore → Discover → Waltz → Install**.
 
 Building a plugin: see the [NeoDex SDK](https://github.com/NDesumeur/neodex-sdk).
+
+## What's new in version 1.1.0
+
+- **Gamepad**: the D-pad, A, B, X, Y and the shoulder buttons place the star; Start starts the song (A too, outside a game); Select pauses.
+- **Accuracy curve** on the end screen: your precision all along the song, with missed notes marked in red underneath, to see where you lost the beat.
