@@ -1,9 +1,9 @@
 {
   "pluginId": "neodex.valse",
   "repo": "NDesumeur/neodex-plugin-valse",
-  "version": "1.2.0",
-  "sha256": "ac50bcffeecce4d4aae207616a4c205068f7212d4fe19002422a750d249fd21f",
-  "approvedAt": "2026-11-20T01:51:14.077Z",
+  "version": "1.2.1",
+  "sha256": "f639768abed50c087ad8acb093c5f849ac06691894a50b6e5c64c6c68a9b93f5",
+  "approvedAt": "2026-11-20T03:12:25.435Z",
   "neobase": ">=4.1.0",
-  "signature": "UNCGpZS2QwzieBR2C99uS961Euu2YhHE/UWFUS5cnhm+NixEs9vDYQVbPMkV1ELwp77XGoKh8tcaTBuqtezOBA=="
+  "signature": "Bvfg6FNoF7HCCYBoV4RPc0cU9PP7lX3wyD8KS5ovq3VaQDdg4uG2CmxyyHjRrweWCwFvs/8+nhIrvEfV6BiTCQ=="
 }
