@@ -9,7 +9,7 @@ const HTML = `<div class="appWrap wide">
       <div class="row"><button class="btn" id="rhTabSongs">CHANSONS</button><button class="btn" id="rhTabMine">MES MUSIQUES</button></div>
       <div class="sysCard rhImport" id="rhImport" style="display:none"><div class="row"><button class="btn main" id="rhFileBtn">IMPORTER UN FICHIER AUDIO</button><input type="file" id="rhFile" accept="audio/*,.mp3,.m4a,.ogg,.opus,.wav,.flac,.webm" hidden></div><div class="row"><select class="f" id="rhMuList"></select><button class="btn" id="rhMuBtn">CRÉER LE NIVEAU</button></div><div class="row"><label>Difficulté <select class="f" id="rhStars"><option value="1">1 ★</option><option value="2">2 ★</option><option value="3" selected>3 ★</option><option value="4">4 ★</option><option value="5">5 ★</option><option value="6">6 ★</option><option value="7">7 ★</option><option value="8">8 ★</option><option value="9">9 ★</option><option value="10">10 ★</option></select></label></div><span class="hint" id="rhImpMsg">Un fichier ou une musique de NeoMusic : le jeu trouve son tempo et ses temps forts et en fait un niveau.</span></div>
       <div id="rhSongs"></div>
-      <div class="sysCard rhOpts"><label>Volume <input type="range" id="rhVol" min="0" max="100" value="70"></label><label>Son des clics <select class="f gSel" id="rhClick"><option value="0" selected>Doux</option><option value="1">Clap</option><option value="2">Bois</option><option value="3">Grosse caisse</option><option value="4">Cristal</option><option value="5">Pop</option><option value="6">Charleston</option><option value="7">Caisse claire</option><option value="8">Pluck</option><option value="9">Tok</option><option value="-1">Aucun</option></select></label><label>Décalage <input type="number" class="f" id="rhOffset" min="-300" max="300" step="5" value="0" style="width:80px" title="Réglé tout seul après chaque partie"> ms</label></div>
+      <div class="sysCard rhOpts"><label>Volume <input type="range" id="rhVol" min="0" max="100" value="70"></label><label>Son des clics <select class="f gSel" id="rhClick"><option value="0" selected>Doux</option><option value="1">Clap</option><option value="2">Bois</option><option value="3">Grosse caisse</option><option value="4">Cristal</option><option value="5">Pop</option><option value="6">Charleston</option><option value="7">Caisse claire</option><option value="8">Pluck</option><option value="9">Tok</option><option value="-1">Aucun</option></select></label><label title="Zooms et rotations de la caméra pendant le morceau">Caméra <select class="f gSel" id="vaCamOn"><option value="1" selected>Effets</option><option value="0">Fixe</option></select></label><label title="Entraînement : commencer plus loin dans le morceau (sans record)">Départ <select class="f gSel" id="vaFrom"><option value="0" selected>Début</option><option value="0.25">25 %</option><option value="0.5">50 %</option><option value="0.75">75 %</option></select></label><label>Décalage <input type="number" class="f" id="rhOffset" min="-300" max="300" step="5" value="0" style="width:80px" title="Réglé tout seul après chaque partie"> ms</label></div>
       <div class="hint">Le soleil et la lune tournent l'un autour de l'autre. Quand celui qui tourne touche la dalle suivante (la dorée), appuie sur n'importe quelle touche ou clique : il se pose, et c'est l'autre qui tourne.</div><div class="hint">Le chemin suit le rythme : une ligne droite (un demi-tour) dure un temps, un virage à angle droit (un quart de tour) un demi-temps, un virage serré encore moins. Trois points bleus sur une dalle : l'astre y tourne plus lentement ; une boucle rose : il change de sens.</div><div class="hint">La difficulté de chaque niveau est calculée sur ses notes (densité, passages chargés) : de 1★ à 10★.</div>
     </div></div>
 </div>`;
@@ -918,8 +918,8 @@ async function rhPrepare(i, diff) {  // i : numéro d'un morceau du jeu, ou iden
 }
 const rhFull = on => { try { if (on && !document.fullscreenElement) cv.parentElement.requestFullscreen?.().catch(() => {}); if (!on && document.fullscreenElement) document.exitFullscreen(); } catch {} };
 function rhBegin() {  // plein écran (par-dessus la barre de NeoDex), puis le morceau part dans 2 secondes
-  rhFull(true); rhAudio(); rhCtx.resume(); rh.t0 = rhCtx.currentTime + 4; rh.hist = []; rhCount(); rh.mode = 'play';
-  try { rh.src?.stop(); } catch {} rh.src = rhCtx.createBufferSource(); rh.src.buffer = rh.c.buffer; rh.src.connect(rhOut); rh.src.start(rh.t0);
+  rhFull(true); rhAudio(); rhCtx.resume(); const F = RHG.from?.() || 0; rh.t0 = rhCtx.currentTime + 4 - F; rh.hist = []; rhCount(); rh.mode = 'play';
+  try { rh.src?.stop(); } catch {} rh.src = rhCtx.createBufferSource(); rh.src.buffer = rh.c.buffer; rh.src.connect(rhOut); rh.src.start(rh.t0 + F, F);
 }
 function rhPress() {  // espace ou clic hors partie : jouer, reprendre, rejouer
   if (!rh) return false;
@@ -939,11 +939,11 @@ function rhMissed(n) { (rh.hist ??= []).push([n.t, 0]); n.judged = true; n.misse
 function rhCheckEnd(now) {
   if (now <= rh.c.len + 1.5) return false;
   rh.mode = 'over'; rh.overAt = rh.tick; try { rh.src?.stop(); } catch {} rhFull(false);
-  const n = rh.notes.length, acc = n ? (rh.counts.PARFAIT * 300 + rh.counts.BIEN * 200 + rh.counts.OK * 100) / (n * 300) : 0;
+  const n = rh.notes.filter(x => !x.off).length, acc = n ? (rh.counts.PARFAIT * 300 + rh.counts.BIEN * 200 + rh.counts.OK * 100) / (n * 300) : 0;
   rh.acc = acc; rh.grade = acc >= .95 ? 'S' : acc >= .9 ? 'A' : acc >= .8 ? 'B' : acc >= .7 ? 'C' : 'D';
-  const k = rh.info.key, res = gstore('rhythm', {}); rh.record = best(k, rh.score);
-  if (rh.record || !res[k]) res[k] = {score: rh.score, acc: Math.round(acc * 1000) / 10, grade: rh.grade, combo: rh.maxCombo};
-  rh.adj = rhAutoOffset(rh.dts); saveGames(); sfx('SAB'.includes(rh.grade) ? 'launch' : 'notify'); rhList(); rhInfo();
+  const k = rh.info.key, res = gstore('rhythm', {}); rh.record = !rh.from && best(k, rh.score);
+  if (!rh.from && (rh.record || !res[k])) res[k] = {score: rh.score, acc: Math.round(acc * 1000) / 10, grade: rh.grade, combo: rh.maxCombo};
+  rh.adj = rhAutoOffset(rh.dts); RHG.over?.(); saveGames(); sfx('SAB'.includes(rh.grade) ? 'launch' : 'notify'); rhList(); rhInfo();
   return true;
 }
 function rhOffsetStep(dts) {  // décalage automatique : si tu tapes en moyenne en retard (ou en avance), on corrige de 70 % de l'écart
@@ -1058,13 +1058,13 @@ $('rhFs').onclick = () => { rhFull(!document.fullscreenElement); $('rhFs').blur(
 $('rhOffset').addEventListener('change', () => { rhOffMs = +$('rhOffset').value; });
 $('rhClick').onchange = () => { rhAudio(); rhCtx.resume(); rhClick(); };  // le son choisi, pour l'entendre
 $('rhVol').oninput = () => { if (rhOut) rhOut.gain.value = +$('rhVol').value / 100 * .6; };
-for (const id of ['rhVol', 'rhClick', 'rhOffset']) $(id).addEventListener('change', () => { gstore('rhythmPrefs', {})[id] = $(id).value; saveGames(); });
+for (const id of ['rhVol', 'rhClick', 'rhOffset', 'vaCamOn', 'vaFrom']) $(id).addEventListener('change', () => { gstore('rhythmPrefs', {})[id] = $(id).value; saveGames(); });
 setInterval(() => { if (rhCtx?.state === 'running' && (!view.classList.contains('on') || rh?.mode !== 'play')) rhCtx.suspend(); }, 200);  // la musique s'arrête avec la partie
 document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) rhPause(); });  // Échap sort du plein écran : on met en pause
 $('gNew').onclick = () => { if (rh) rhSelect(rh.song, rh.diff); $('gNew').blur(); };
 function rhInfo() { const res = games.rhythm || {}, all = Object.values(res); showStats([['Morceaux joués', all.length], ['Notes S', all.filter(r => r.grade === 'S').length], ['Meilleur combo', all.reduce((m, r) => Math.max(m, r.combo || 0), 0)]]); }
 function rhOpen() {
-  const p = games.rhythmPrefs || {}; for (const id of ['rhVol', 'rhClick', 'rhOffset']) if (p[id] != null) $(id).value = p[id];
+  const p = games.rhythmPrefs || {}; for (const id of ['rhVol', 'rhClick', 'rhOffset', 'vaCamOn', 'vaFrom']) if (p[id] != null) $(id).value = p[id];
   rhOffMs = +$('rhOffset').value; rhInfo();
   if (rh) { rhList(); return gameLoop(rh, RHG.key, RHG.update, rhDrawAll); }
   const last = games.rhythmLast || {song: 0, diff: 'normal'}; rhSelect(last.song, last.diff).catch(() => rhSelect(0, 'normal'));
@@ -1083,7 +1083,9 @@ const RHG = {key: 'valse', factor: 1.15, color: '#ffd84a',
     vaPath(out, beat);
     return out;
   },
-  reset() { Object.assign(rh, {judge: null, cam: null, flash: [], trail: [], tap: -99}); },
+  reset() { Object.assign(rh, {judge: null, cam: null, flash: [], trail: [], tap: -99, from: 0, pct: 0, camfx: vaVal('vaCamOn', '1') === '1' ? vaCamFx(rh.info, rh.c.len, (rh.c.step || .125) * 4) : null}); },
+  from: () => vaFrom(),
+  over() { vaOver(); },
   update() {
     const now = rhNow();
     for (const n of rh.notes) { if (n.judged) continue; if (n.t - now > .2) break; if (now - n.t > RH.WIN.at(-1)[0]) { rhMissed(n); vaFx(n, null); } }
@@ -1131,6 +1133,49 @@ function vaPos(t) {
   const n = N[i], ang = n.a + n.dir * n.w * (n.t - t);
   return {x: n.px, y: n.py, ox: n.px + Math.cos(ang) * VA.R, oy: n.py + Math.sin(ang) * VA.R, i};
 }
+/* ---------- 1.3.0 : effets de caméra, entraînement depuis n'importe quel passage, record « sans faute », la figure dessinée par le chemin ---------- */
+const vaVal = (id, d) => { const v = $(id)?.value; return v == null || v === '' ? d : v; };
+const VA_FX = ['', 'zoom', 'large', 'tourne', 'balance', 'pouls'];
+function vaCamFx(info, len, beat) {  // toutes les 8 mesures, un effet de caméra tiré d'après le morceau (le premier passage reste calme)
+  const sec = 32 * beat, r = seeded(info.name.length * 71 + Math.round(info.bpm * 3)), L = [''];
+  for (let k = 1; k * sec < len + sec; k++) { let e; do e = VA_FX[Math.floor(r() * VA_FX.length)]; while (e === L.at(-1)); L.push(e); }
+  return {sec, beat, L};
+}
+function vaCamAt(e, u, k, C) {  // -> [échelle, rotation] de l'effet e, u secondes après le début de son passage
+  if (e === 'zoom') return [1.35, 0];
+  if (e === 'large') return [.72, 0];
+  if (e === 'tourne') return [1, Math.min(1, u / C.sec) * .6 * (k % 2 ? 1 : -1)];
+  if (e === 'balance') return [1, Math.sin(u / C.beat * Math.PI / 2) * .12];
+  if (e === 'pouls') return [1 + .08 * Math.max(0, 1 - (u / C.beat % 1) * 4), 0];
+  return [1, 0];
+}
+function vaCam(now) {  // l'effet du moment, en fondu d'un temps depuis le précédent
+  const C = rh.camfx; if (!C || now <= 0) return [1, 0];
+  const k = Math.min(C.L.length - 1, Math.floor(now / C.sec)), u = now - k * C.sec, b = vaCamAt(C.L[k], u, k, C);
+  if (!k || u >= C.beat) return b;
+  const a = vaCamAt(C.L[k - 1], C.sec, k - 1, C), m = (x => x * x * (3 - 2 * x))(u / C.beat);
+  return [a[0] + (b[0] - a[0]) * m, a[1] + (b[1] - a[1]) * m];
+}
+{ const C = vaCamFx({name: 'essai', bpm: 120}, 120, .5); console.assert(C.L[0] === '' && C.L.length > 6 && C.L.every((e, i) => !i || e !== C.L[i - 1]), 'vaCamFx'); }
+function vaCamPush(now) { const [s, r] = vaCam(now); g.save(); if (s !== 1 || r) { g.translate(W / 2, H / 2 + 10); g.rotate(r); g.scale(s, s); g.translate(-W / 2, -(H / 2 + 10)); } }
+// l'entraînement : la partie commence un peu avant la dalle choisie ; les notes d'avant ne comptent pas, et rien n'est enregistré comme record
+function vaFrom() {
+  const f = +vaVal('vaFrom', 0), N = rh.notes; if (!f || N.length < 8) return 0;
+  const i = Math.min(N.length - 1, Math.floor(N.length * f)), T = Math.max(0, N[i].t - 2);
+  for (let j = 0; j < i; j++) { N[j].judged = true; N[j].off = true; } rh.from = T; return T;
+}
+// le record « sans faute » : la part du morceau jouée avant le premier raté
+function vaOver() {
+  const N = rh.notes.filter(n => !n.off), fm = N.findIndex(n => n.missed); rh.pct = N.length ? Math.floor((fm < 0 ? N.length : fm) / N.length * 100) : 0;
+  const B = gstore('valseBest', {}), k = rh.info.key; rh.pctBest = Math.max(B[k] || 0, rh.from ? 0 : rh.pct); if (!rh.from) B[k] = rh.pctBest;
+}
+function vaFigure() {  // l'écran de fin : tout le chemin, la figure qu'il dessine, dalles réussies en vert et ratées en rouge
+  const N = rh.notes; if (N.length < 2) return;
+  const P = N.map(n => [n.px + Math.cos(n.a) * VA.R, n.py + Math.sin(n.a) * VA.R]), xs = P.map(p => p[0]), ys = P.map(p => p[1]);
+  const x0 = Math.min(...xs), y0 = Math.min(...ys), bw = 124, bh = 22, s = Math.min(bw / Math.max(1, Math.max(...xs) - x0), bh / Math.max(1, Math.max(...ys) - y0)), ox = W / 2 - bw / 2, oy = 200;
+  g.fillStyle = 'rgba(10,10,30,.88)'; g.fillRect(ox - 6, oy - 6, bw + 12, bh + 12); px(g, '#ffd84a', ox - 6, oy - 6, bw + 12, 1);
+  P.forEach(([x, y], j) => px(g, N[j].off ? '#4a4a6a' : N[j].missed ? '#ff4a5a' : '#7ee07a', ox + (x - x0) * s, oy + (y - y0) * s, 1, 1));
+}
 function vaFx(n, w) {
   rh.judge = {text: w ? w[1] : 'RATÉ', col: w ? w[3] : '#ff7a8a', t: 26};
   const x = n.px + Math.cos(n.a) * VA.R, y = n.py + Math.sin(n.a) * VA.R;
@@ -1170,6 +1215,7 @@ function vaDraw() {
   g.drawImage(VA_BG, 0, 0);
   { const nx = Math.round((((-rh.cam.x * .08) % 640) + 640) % 640), ny = Math.round((((-rh.cam.y * .08) % 480) + 480) % 480); for (const ox of [nx - 640, nx]) for (const oy of [ny - 480, ny]) g.drawImage(VA_NEB, ox, oy); }
   VA_STARS.forEach((L, k) => { const f = k ? .25 : .1; for (const [x, y, b] of L) { const sx = ((x - rh.cam.x * f) % 640 + 640) % 640 - 160, sy = ((y - rh.cam.y * f) % 480 + 480) % 480 - 120; if (sx < 0 || sx >= W || sy < 0 || sy >= H) continue; px(g, b > .85 ? '#ffffff' : k ? '#8a8ac8' : '#4a4a7a', sx, sy, k && b > .9 ? 2 : 1, 1); } });
+  vaCamPush(rh.mode === 'play' || rh.mode === 'pause' ? now : 0);
   // le chemin : un trait entre les dalles, puis les dalles (passées, à venir, la prochaine en or)
   const N = rh.notes, i0 = Math.max(0, P.i - 8), i1 = Math.min(N.length, P.i + 22);
   const tilePos = j => j < N.length ? [N[j].px + Math.cos(N[j].a) * VA.R, N[j].py + Math.sin(N[j].a) * VA.R] : null;
@@ -1193,6 +1239,7 @@ function vaDraw() {
   for (const f of rh.fx) if (f.k === 'ring') { const R = 8 + f.t * .9; g.globalAlpha = Math.max(0, 1 - f.t / 20); for (let a = 0; a < 28; a++) px(g, f.col, cx + f.x + Math.cos(a / 28 * Math.PI * 2) * R, cy + f.y + Math.sin(a / 28 * Math.PI * 2) * R, 1, 1); g.globalAlpha = 1; }
   for (const s of rh.sparks) { g.globalAlpha = s.life / 20; px(g, s.col, cx + s.x, cy + s.y, 2, 2); g.globalAlpha = 1; }
   if (rh.judge && rh.mode === 'play') pxFont(g, rh.judge.text, W / 2, H - 40, rh.judge.col, 7, 'center');
+  g.restore();
   if (rh.mode !== 'ready' && rh.mode !== 'load') {
     rhProgress(now, '#ffd84a'); pxFont(g, String(rh.score).padStart(7, '0'), 4, 14, '#ffffff', 7);
     if (rh.combo > 4) pxFont(g, rh.combo + ' combo', W - 4, 14, '#ffd84a', 7, 'right');
@@ -1200,6 +1247,8 @@ function vaDraw() {
   }
   if (rh.mode === 'play' && now < 0) pxFont(g, String(Math.ceil(-now)), W / 2, 60, '#ffd84a', 16, 'center');
   rhScreens(60);
+  if (rh.mode === 'over' && rh.tick - rh.overAt > 20) { vaFigure(); pxFont(g, (rh.from ? 'ENTRAÎNEMENT · ' : '') + 'SANS FAUTE ' + rh.pct + ' %' + (rh.pctBest ? ' · RECORD ' + rh.pctBest + ' %' : ''), W / 2, 190, '#c8d8ff', 6, 'center'); }
+  if (rh.mode === 'ready' && +vaVal('vaFrom', 0)) pxFont(g, 'ENTRAÎNEMENT : DÉPART À ' + Math.round(+vaVal('vaFrom', 0) * 100) + ' %', W / 2, 200, '#6ac8ff', 7, 'center');
   if (rh.tick % 15 === 0) cv.setAttribute('aria-label', 'Valse, ' + (rh.info?.name || '') + ' : ' + ({ready: 'prêt', load: 'chargement', play: 'en jeu', pause: 'pause', over: 'fini'}[rh.mode] || rh.mode) + ', score ' + rh.score + ', combo ' + rh.combo + ', ' +
     Object.entries(rh.counts).map(([k, v]) => k.toLowerCase() + ' ' + v).join(', ') + ', dalle ' + Math.min(P.i, N.length) + ' sur ' + N.length + '.');
 }
@@ -1211,7 +1260,8 @@ document.addEventListener('keydown', e => {
   if (k === ' ' || k === 'Enter') { e.preventDefault(); if (!e.repeat) rhPress(); }
 });
 document.addEventListener('keyup', e => { if (e.key === ' ' && keyOk(e)) e.preventDefault(); });
-cv.__rh = {st: () => rh, finish: hist => { rh.hist = hist; rh.mode = 'play'; rhCheckEnd(1e9); }};  // pour le test « local »
+$('vaCamOn').addEventListener('change', () => { if (rh?.info) rh.camfx = vaVal('vaCamOn', '1') === '1' ? vaCamFx(rh.info, rh.c.len, (rh.c.step || .125) * 4) : null; });
+cv.__rh = {cam: t => vaCam(t), st: () => rh, finish: hist => { rh.hist = hist; rh.mode = 'play'; rhCheckEnd(1e9); }};  // pour le test « local »
 {  // la manette : la croix, A, B, X, Y et les gâchettes hautes frappent le temps, Start lance, Select met en pause
   const KEY = {14: 'd', 13: 'f', 12: 'j', 15: 'k', 2: 'd', 0: 'f', 3: 'j', 1: 'k', 4: 'd', 5: 'k', 9: ' ', 8: 'p'}, held = new Set();
   const send = (k, type) => document.dispatchEvent(new KeyboardEvent(type, {key: k, bubbles: true}));

@@ -27,6 +27,13 @@ The **Songs** tab has the 1200 Rythme tracks, in four difficulties (Easy, Normal
 
 In **My music**, create a level from an imported **audio file** or a track from your **NeoMusic** library: the game finds its tempo and strong beats and turns them into a level, at the chosen **difficulty** (1 to 10 stars).
 
+## Camera, practice and figure
+
+- **Camera** (setting, Effects by default): every 8 bars, the camera zooms in, pulls back, slowly turns, sways or pulses on the beat. **Fixed** turns it off.
+- **Start** (practice): begin at 25, 50 or 75 % of the song to work on a passage. Earlier notes don't count, and nothing is kept as a record.
+- **Flawless**: the end screen gives the share of the song played before your first miss, and your record on this level.
+- The end screen also shows **the figure drawn by the whole path**, cleared tiles in green and missed ones in red.
+
 ## Settings
 
 - Music **volume**.

@@ -1,9 +1,9 @@
 {
   "id": "neodex.valse",
   "name": "Valse",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "author": "NDesumeur",
-  "description": "Jeu de rythme à une touche : le soleil et la lune tournent l'un autour de l'autre sur un chemin de dalles dessiné par la musique ; tape au moment où l'astre touche la dalle suivante. Les 1200 morceaux de Rythme notés de 1 à 10 étoiles, ou des niveaux créés depuis ta musique ; combo, note de S à D. Version 1.1.0 : jeu à la manette (n'importe quel bouton pose l'astre, Start lance, Select met en pause) et courbe de précision le long du morceau sur l'écran de fin.",
+  "description": "Jeu de rythme à une touche : le soleil et la lune tournent l'un autour de l'autre sur un chemin de dalles dessiné par la musique ; tape au moment où l'astre touche la dalle suivante. Les 1200 morceaux de Rythme notés de 1 à 10 étoiles, ou des niveaux créés depuis ta musique ; combo, note de S à D. Version 1.1.0 : jeu à la manette (n'importe quel bouton pose l'astre, Start lance, Select met en pause) et courbe de précision le long du morceau sur l'écran de fin. Effets de caméra, entraînement depuis 25, 50 ou 75 % du morceau, record « sans faute », figure du chemin à la fin.",
   "icon": "icon.png",
   "entry": "index.js",
   "view": "valse",

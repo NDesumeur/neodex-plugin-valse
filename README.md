@@ -27,6 +27,13 @@ L'onglet **Chansons** reprend les 1200 morceaux de Rythme, en quatre difficulté
 
 Dans **Mes musiques**, crée un niveau à partir d'un **fichier audio** importé ou d'une musique de ta bibliothèque **NeoMusic** : le jeu trouve son tempo et ses temps forts et en fait un niveau, à la **difficulté** choisie (1 à 10 étoiles).
 
+## Caméra, entraînement et figure
+
+- **Caméra** (réglage, Effets par défaut) : toutes les 8 mesures, la caméra zoome, recule, tourne doucement, se balance ou pulse sur le temps. **Fixe** l'arrête.
+- **Départ** (entraînement) : commence à 25, 50 ou 75 % du morceau pour travailler un passage. Les notes d'avant ne comptent pas, et rien n'est gardé comme record.
+- **Sans faute** : l'écran de fin donne la part du morceau jouée avant ton premier raté, et ton record sur ce niveau.
+- L'écran de fin montre aussi **la figure dessinée par tout le chemin**, dalles réussies en vert et ratées en rouge.
+
 ## Réglages
 
 - **Volume** de la musique.

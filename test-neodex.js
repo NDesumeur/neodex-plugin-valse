@@ -29,5 +29,16 @@ module.exports = async ({ pj, sleep }) => {
   await sleep(1200); await shot('2-fin');
   const end = await pj(`(() => { const rh = document.getElementById('gc').__rh.st(); return [rh.mode, rh.hist.length].join(','); })()`);
   if (end !== 'over,200') throw new Error('écran de fin attendu : ' + end);
-  return l;
+  // 1.3.0 : les effets de caméra (un zoom ou une rotation quelque part), puis l'entraînement à 50 % : les notes d'avant ne comptent pas
+  const cam = await pj(`(() => { const T = document.getElementById('gc').__rh, L = T.st().c.len; for (let t = 1; t < L; t += .5) { const [s, r] = T.cam(t); if (s !== 1 || r) return true; } return false; })()`);
+  if (!cam) throw new Error('aucun effet de caméra');
+  await pj(`(() => { const s = document.getElementById('vaFrom'); s.value = '0.5'; s.dispatchEvent(new Event('change')); return 0; })()`);
+  await pj(`document.querySelector('#rhSongs .rhSong .btn')?.click(), 0`); await sleep(1000);
+  for (let i = 0; i < 40 && !/: prêt,/.test(await label()); i++) await sleep(500);
+  await key(' '); await sleep(2500);
+  const fr = await pj(`(() => { const rh = document.getElementById('gc').__rh.st(), off = rh.notes.filter(n => n.off).length; return [rh.from > 0, off > 0 && off < rh.notes.length, rh.notes.filter(n => !n.off && n.t < rh.from).length].join(); })()`);
+  await pj(`(() => { const s = document.getElementById('vaFrom'); s.value = '0'; s.dispatchEvent(new Event('change')); return 0; })()`); await key('p');
+  if (fr !== 'true,true,0') throw new Error('entraînement à 50 % : ' + fr);
+  await shot('3-entrainement');
+  return l + ' · caméra et entraînement ok';
 };
