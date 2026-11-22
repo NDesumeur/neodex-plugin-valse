@@ -1,16 +1,19 @@
 {
   "id": "neodex.valse",
   "name": "Valse",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "author": "NDesumeur",
-  "description": "Jeu de rythme à une touche : le soleil et la lune tournent l'un autour de l'autre sur un chemin de dalles dessiné par la musique ; tape au moment où l'astre touche la dalle suivante. Les 1200 morceaux de Rythme notés de 1 à 10 étoiles, ou des niveaux créés depuis ta musique ; combo, note de S à D. Version 1.1.0 : jeu à la manette (n'importe quel bouton pose l'astre, Start lance, Select met en pause) et courbe de précision le long du morceau sur l'écran de fin. Effets de caméra, entraînement depuis 25, 50 ou 75 % du morceau, record « sans faute », figure du chemin à la fin.",
+  "description": "Jeu de rythme à une touche : le soleil et la lune tournent l'un autour de l'autre sur un chemin de dalles dessiné par la musique ; tape pile quand l'astre touche la dalle suivante. Trop tôt ou trop tard, la partie est perdue : on reprend au dernier drapeau (toutes les 32 dalles). Les 1200 morceaux de Rythme notés de 1 à 10 étoiles, ou des niveaux créés depuis ta musique ; combo, note de S à D, manette, entraînement depuis 25, 50 ou 75 % du morceau.",
   "icon": "icon.png",
   "entry": "index.js",
   "view": "valse",
   "neobase": ">=4.1.0",
   "type": "app",
   "category": "Jeux",
-  "compatibility": ["windows", "linux"],
+  "compatibility": [
+    "windows",
+    "linux"
+  ],
   "syncMode": "progression",
   "syncInfo": "Scores et notes par niveau, réglages.",
   "mobile": false,

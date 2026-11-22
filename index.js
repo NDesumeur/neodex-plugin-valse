@@ -9,7 +9,7 @@ const HTML = `<div class="appWrap wide">
       <div class="row"><button class="btn" id="rhTabSongs">CHANSONS</button><button class="btn" id="rhTabMine">MES MUSIQUES</button></div>
       <div class="sysCard rhImport" id="rhImport" style="display:none"><div class="row"><button class="btn main" id="rhFileBtn">IMPORTER UN FICHIER AUDIO</button><input type="file" id="rhFile" accept="audio/*,.mp3,.m4a,.ogg,.opus,.wav,.flac,.webm" hidden></div><div class="row"><select class="f" id="rhMuList"></select><button class="btn" id="rhMuBtn">CRÉER LE NIVEAU</button></div><div class="row"><label>Difficulté <select class="f" id="rhStars"><option value="1">1 ★</option><option value="2">2 ★</option><option value="3" selected>3 ★</option><option value="4">4 ★</option><option value="5">5 ★</option><option value="6">6 ★</option><option value="7">7 ★</option><option value="8">8 ★</option><option value="9">9 ★</option><option value="10">10 ★</option></select></label></div><span class="hint" id="rhImpMsg">Un fichier ou une musique de NeoMusic : le jeu trouve son tempo et ses temps forts et en fait un niveau.</span></div>
       <div id="rhSongs"></div>
-      <div class="sysCard rhOpts"><label>Volume <input type="range" id="rhVol" min="0" max="100" value="70"></label><label>Son des clics <select class="f gSel" id="rhClick"><option value="0" selected>Doux</option><option value="1">Clap</option><option value="2">Bois</option><option value="3">Grosse caisse</option><option value="4">Cristal</option><option value="5">Pop</option><option value="6">Charleston</option><option value="7">Caisse claire</option><option value="8">Pluck</option><option value="9">Tok</option><option value="-1">Aucun</option></select></label><label title="Zooms et rotations de la caméra pendant le morceau">Caméra <select class="f gSel" id="vaCamOn"><option value="1" selected>Effets</option><option value="0">Fixe</option></select></label><label title="Entraînement : commencer plus loin dans le morceau (sans record)">Départ <select class="f gSel" id="vaFrom"><option value="0" selected>Début</option><option value="0.25">25 %</option><option value="0.5">50 %</option><option value="0.75">75 %</option></select></label><label>Décalage <input type="number" class="f" id="rhOffset" min="-300" max="300" step="5" value="0" style="width:80px" title="Réglé tout seul après chaque partie"> ms</label></div>
+      <div class="sysCard rhOpts"><label>Volume <input type="range" id="rhVol" min="0" max="100" value="70"></label><label>Son des clics <select class="f gSel" id="rhClick"><option value="0" selected>Doux</option><option value="1">Clap</option><option value="2">Bois</option><option value="3">Grosse caisse</option><option value="4">Cristal</option><option value="5">Pop</option><option value="6">Charleston</option><option value="7">Caisse claire</option><option value="8">Pluck</option><option value="9">Tok</option><option value="-1">Aucun</option></select></label><label title="Entraînement : commencer plus loin dans le morceau (sans record)">Départ <select class="f gSel" id="vaFrom"><option value="0" selected>Début</option><option value="0.25">25 %</option><option value="0.5">50 %</option><option value="0.75">75 %</option></select></label><label>Décalage <input type="number" class="f" id="rhOffset" min="-300" max="300" step="5" value="0" style="width:80px" title="Réglé tout seul après chaque partie"> ms</label></div>
       <div class="hint">Le soleil et la lune tournent l'un autour de l'autre. Quand celui qui tourne touche la dalle suivante (la dorée), appuie sur n'importe quelle touche ou clique : il se pose, et c'est l'autre qui tourne.</div><div class="hint">Le chemin suit le rythme : une ligne droite (un demi-tour) dure un temps, un virage à angle droit (un quart de tour) un demi-temps, un virage serré encore moins. Trois points bleus sur une dalle : l'astre y tourne plus lentement ; une boucle rose : il change de sens.</div><div class="hint">La difficulté de chaque niveau est calculée sur ses notes (densité, passages chargés) : de 1★ à 10★.</div>
     </div></div>
 </div>`;
@@ -1058,13 +1058,13 @@ $('rhFs').onclick = () => { rhFull(!document.fullscreenElement); $('rhFs').blur(
 $('rhOffset').addEventListener('change', () => { rhOffMs = +$('rhOffset').value; });
 $('rhClick').onchange = () => { rhAudio(); rhCtx.resume(); rhClick(); };  // le son choisi, pour l'entendre
 $('rhVol').oninput = () => { if (rhOut) rhOut.gain.value = +$('rhVol').value / 100 * .6; };
-for (const id of ['rhVol', 'rhClick', 'rhOffset', 'vaCamOn', 'vaFrom']) $(id).addEventListener('change', () => { gstore('rhythmPrefs', {})[id] = $(id).value; saveGames(); });
+for (const id of ['rhVol', 'rhClick', 'rhOffset', 'vaFrom']) $(id).addEventListener('change', () => { gstore('rhythmPrefs', {})[id] = $(id).value; saveGames(); });
 setInterval(() => { if (rhCtx?.state === 'running' && (!view.classList.contains('on') || rh?.mode !== 'play')) rhCtx.suspend(); }, 200);  // la musique s'arrête avec la partie
 document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) rhPause(); });  // Échap sort du plein écran : on met en pause
 $('gNew').onclick = () => { if (rh) rhSelect(rh.song, rh.diff); $('gNew').blur(); };
 function rhInfo() { const res = games.rhythm || {}, all = Object.values(res); showStats([['Morceaux joués', all.length], ['Notes S', all.filter(r => r.grade === 'S').length], ['Meilleur combo', all.reduce((m, r) => Math.max(m, r.combo || 0), 0)]]); }
 function rhOpen() {
-  const p = games.rhythmPrefs || {}; for (const id of ['rhVol', 'rhClick', 'rhOffset', 'vaCamOn', 'vaFrom']) if (p[id] != null) $(id).value = p[id];
+  const p = games.rhythmPrefs || {}; for (const id of ['rhVol', 'rhClick', 'rhOffset', 'vaFrom']) if (p[id] != null) $(id).value = p[id];
   rhOffMs = +$('rhOffset').value; rhInfo();
   if (rh) { rhList(); return gameLoop(rh, RHG.key, RHG.update, rhDrawAll); }
   const last = games.rhythmLast || {song: 0, diff: 'normal'}; rhSelect(last.song, last.diff).catch(() => rhSelect(0, 'normal'));
@@ -1074,7 +1074,7 @@ function rhOpen() {
    l'astre qui tourne se pose, l'autre se met à tourner. Le chemin est dessiné par la musique : un demi-tour = un temps, un quart de tour = un demi-temps. ---------- */
 const VA = {R: 30, SPIN: Math.PI, MIN: .25};  // SPIN : radians par temps ; MIN : écart minimum entre deux notes, en temps
 const RHG = {key: 'valse', factor: 1.15, color: '#ffd84a',
-  help: [['Une touche (ou un clic) quand l\'astre touche la dalle suivante', '#ffe8b0'], ['Demi-tour = un temps · quart de tour = un demi-temps', '#d8e0ff'], ['Le chemin suit la musique : regarde ses virages', '#d8e0ff']],
+  help: [['Une touche (ou un clic) quand l\'astre touche la dalle dorée', '#ffe8b0'], ['Demi-tour = un temps · quart de tour = un demi-temps', '#d8e0ff'], ['Trop tôt ou trop tard : perdu !', '#ff9aa8']],
   // une seule touche : les notes ensemble n'en font qu'une, les notes trop rapprochées (moins d'un quart de temps) sont retirées ;
   // puis le chemin : chaque dalle est là où l'astre qui tourne arrive au moment de la note
   chart(base, c) {
@@ -1083,12 +1083,12 @@ const RHG = {key: 'valse', factor: 1.15, color: '#ffd84a',
     vaPath(out, beat);
     return out;
   },
-  reset() { Object.assign(rh, {judge: null, cam: null, flash: [], trail: [], tap: -99, from: 0, pct: 0, camfx: vaVal('vaCamOn', '1') === '1' ? vaCamFx(rh.info, rh.c.len, (rh.c.step || .125) * 4) : null}); },
+  reset() { Object.assign(rh, {judge: null, cam: null, flash: [], trail: [], tap: -99, from: 0, pct: 0, cp: 0, last: -9, failed: '', failAt: 0}); },
   from: () => vaFrom(),
   over() { vaOver(); },
   update() {
     const now = rhNow();
-    for (const n of rh.notes) { if (n.judged) continue; if (n.t - now > .2) break; if (now - n.t > RH.WIN.at(-1)[0]) { rhMissed(n); vaFx(n, null); } }
+    for (const n of rh.notes) { if (n.judged) continue; if (n.t - now > .2) break; if (now - n.t > RH.WIN.at(-1)[0]) { vaFail(n, 'TROP TARD'); return; } }
     for (const s of rh.sparks) { s.x += s.vx; s.y += s.vy; s.vx *= .94; s.vy *= .94; s.life--; } rh.sparks = rh.sparks.filter(s => s.life > 0);
     for (const f of rh.fx) f.t++; rh.fx = rh.fx.filter(f => f.t < 24);
     if (rh.judge && --rh.judge.t <= 0) rh.judge = null;
@@ -1133,35 +1133,14 @@ function vaPos(t) {
   const n = N[i], ang = n.a + n.dir * n.w * (n.t - t);
   return {x: n.px, y: n.py, ox: n.px + Math.cos(ang) * VA.R, oy: n.py + Math.sin(ang) * VA.R, i};
 }
-/* ---------- 1.3.0 : effets de caméra, entraînement depuis n'importe quel passage, record « sans faute », la figure dessinée par le chemin ---------- */
+/* ---------- 1.3.0 : entraînement depuis n'importe quel passage, record « sans faute », la figure dessinée par le chemin ---------- */
 const vaVal = (id, d) => { const v = $(id)?.value; return v == null || v === '' ? d : v; };
-const VA_FX = ['', 'zoom', 'large', 'tourne', 'balance', 'pouls'];
-function vaCamFx(info, len, beat) {  // toutes les 8 mesures, un effet de caméra tiré d'après le morceau (le premier passage reste calme)
-  const sec = 32 * beat, r = seeded(info.name.length * 71 + Math.round(info.bpm * 3)), L = [''];
-  for (let k = 1; k * sec < len + sec; k++) { let e; do e = VA_FX[Math.floor(r() * VA_FX.length)]; while (e === L.at(-1)); L.push(e); }
-  return {sec, beat, L};
-}
-function vaCamAt(e, u, k, C) {  // -> [échelle, rotation] de l'effet e, u secondes après le début de son passage
-  if (e === 'zoom') return [1.35, 0];
-  if (e === 'large') return [.72, 0];
-  if (e === 'tourne') return [1, Math.min(1, u / C.sec) * .6 * (k % 2 ? 1 : -1)];
-  if (e === 'balance') return [1, Math.sin(u / C.beat * Math.PI / 2) * .12];
-  if (e === 'pouls') return [1 + .08 * Math.max(0, 1 - (u / C.beat % 1) * 4), 0];
-  return [1, 0];
-}
-function vaCam(now) {  // l'effet du moment, en fondu d'un temps depuis le précédent
-  const C = rh.camfx; if (!C || now <= 0) return [1, 0];
-  const k = Math.min(C.L.length - 1, Math.floor(now / C.sec)), u = now - k * C.sec, b = vaCamAt(C.L[k], u, k, C);
-  if (!k || u >= C.beat) return b;
-  const a = vaCamAt(C.L[k - 1], C.sec, k - 1, C), m = (x => x * x * (3 - 2 * x))(u / C.beat);
-  return [a[0] + (b[0] - a[0]) * m, a[1] + (b[1] - a[1]) * m];
-}
-{ const C = vaCamFx({name: 'essai', bpm: 120}, 120, .5); console.assert(C.L[0] === '' && C.L.length > 6 && C.L.every((e, i) => !i || e !== C.L[i - 1]), 'vaCamFx'); }
-function vaCamPush(now) { const [s, r] = vaCam(now); g.save(); if (s !== 1 || r) { g.translate(W / 2, H / 2 + 10); g.rotate(r); g.scale(s, s); g.translate(-W / 2, -(H / 2 + 10)); } }
 // l'entraînement : la partie commence un peu avant la dalle choisie ; les notes d'avant ne comptent pas, et rien n'est enregistré comme record
+let vaResume = null;  // {key, i} : reprendre au drapeau i après une partie perdue
 function vaFrom() {
-  const f = +vaVal('vaFrom', 0), N = rh.notes; if (!f || N.length < 8) return 0;
-  const i = Math.min(N.length - 1, Math.floor(N.length * f)), T = Math.max(0, N[i].t - 2);
+  const f = +vaVal('vaFrom', 0), N = rh.notes, R = vaResume?.key === rh.info.key ? vaResume.i : 0; vaResume = null;
+  if ((!f && !R) || N.length < 8) return 0;
+  const i = R || Math.min(N.length - 1, Math.floor(N.length * f)), T = Math.max(0, N[i].t - 2); rh.cp = i;
   for (let j = 0; j < i; j++) { N[j].judged = true; N[j].off = true; } rh.from = T; return T;
 }
 // le record « sans faute » : la part du morceau jouée avant le premier raté
@@ -1182,12 +1161,26 @@ function vaFx(n, w) {
   rh.fx.push({k: 'ring', x, y, col: w ? w[3] : '#ff4a5a', t: 0});
   if (w) for (let i = 0; i < 10; i++) { const a = Math.random() * Math.PI * 2, v = .6 + Math.random() * 1.6; rh.sparks.push({x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 20, col: w[3]}); }
 }
+// 2.0.0 : seule la prochaine dalle compte. Un appui trop tôt (dans le temps qui la précède) ou trop tard perd la partie : taper au hasard ne marche plus.
+// Deux touches presque ensemble (moins de 60 ms) ne comptent qu'une fois ; loin avant la dalle (plus d'un temps), l'appui est ignoré.
+const VA_CP = 32;  // un drapeau toutes les 32 dalles
 function vaHit(now = rhNow()) {
-  rh.tap = rh.tick; rhPlayKit(3, .4);
-  let near = null;
-  for (const n of rh.notes) { if (n.judged) continue; if (n.t - now > .2) break; if (Math.abs(n.t - now) <= RH.WIN.at(-1)[0] && (!near || Math.abs(n.t - now) < Math.abs(near.t - now))) near = n; }
-  if (!near) return;
-  const w = rhHit(near, now - near.t); near.w = w; vaFx(near, w);
+  if (rh.mode !== 'play' || now - rh.last < .06) return;
+  const n = rh.notes.find(x => !x.judged); if (!n) return;
+  const dt = now - n.t, beat = (rh.c?.step || .125) * 4; if (dt < -Math.max(.6, beat)) return;
+  rh.tap = rh.tick; rh.last = now; rhPlayKit(3, .4);
+  const w = rhWin(dt); if (!w) { vaFail(n, dt < 0 ? 'TROP TÔT' : 'TROP TARD'); return; }
+  rhHit(n, dt); n.w = w; vaFx(n, w);
+  const j = rh.notes.indexOf(n); if (j && j % VA_CP === 0) { rh.cp = j; rh.judge = {text: 'DRAPEAU !', col: '#7ee07a', t: 40}; }
+}
+function vaFail(n, why) {  // la partie est perdue : la musique s'arrête, on reprend au dernier drapeau
+  rhMissed(n); vaFx(n, null); rh.judge = null; rh.failed = why; rh.failAt = rh.tick; rh.mode = 'fail'; try { rh.src?.stop(); } catch {}
+  if (rh.info) { rh.failT = rhNow(); vaOver(); saveGames(); sfx('notify'); }
+}
+function vaRetry(cp) {  // Espace : au drapeau ; R : depuis le début
+  if (rh.tick - rh.failAt < 30) return;  // pas de reprise par accident en tapant encore
+  vaResume = cp && rh.cp ? {key: rh.info.key, i: rh.cp} : null;
+  rhSelect(rh.song, rh.diff).then(() => { if (rh?.mode === 'ready') rhBegin(); });
 }
 /* le dessin : ciel de nuit (étoiles en deux couches qui suivent la caméra de loin), le chemin de dalles, les deux astres */
 const VA_BG = cnv(W, H, b => {
@@ -1209,13 +1202,13 @@ function vaTile(kind) {  // une dalle de pierre : contour, dessus clair, bord so
   return VA_TILE[kind] = cnv(16, 16, b => { px(b, c[0], 1, 0, 14, 16); px(b, c[0], 0, 1, 16, 14); px(b, c[2], 1, 1, 14, 14); px(b, c[1], 1, 1, 14, 2); px(b, c[1], 1, 1, 2, 13); px(b, c[3], 2, 13, 13, 2); px(b, c[3], 13, 3, 2, 11); px(b, c[1], 5, 5, 2, 1); px(b, c[3], 9, 9, 2, 1); });
 }
 function vaDraw() {
-  const now = rhNow(), P = vaPos(rh.mode === 'ready' || rh.mode === 'load' ? (rh.notes[0]?.t ?? 0) - 60 + (rh.tick / 60) % 50 : now);  // avant la partie : l'astre tourne sur la première dalle
+  const now = rh.mode === 'fail' ? rh.failT : rhNow(), P = vaPos(rh.mode === 'ready' || rh.mode === 'load' ? (rh.notes[0]?.t ?? 0) - 60 + (rh.tick / 60) % 50 : now);  // avant la partie : l'astre tourne sur la première dalle
   rh.cam ??= {x: P.x, y: P.y}; rh.cam.x += (P.x - rh.cam.x) * .08; rh.cam.y += (P.y - rh.cam.y) * .08;
   const cx = Math.round(W / 2 - rh.cam.x), cy = Math.round(H / 2 + 10 - rh.cam.y);
   g.drawImage(VA_BG, 0, 0);
-  { const nx = Math.round((((-rh.cam.x * .08) % 640) + 640) % 640), ny = Math.round((((-rh.cam.y * .08) % 480) + 480) % 480); for (const ox of [nx - 640, nx]) for (const oy of [ny - 480, ny]) g.drawImage(VA_NEB, ox, oy); }
-  VA_STARS.forEach((L, k) => { const f = k ? .25 : .1; for (const [x, y, b] of L) { const sx = ((x - rh.cam.x * f) % 640 + 640) % 640 - 160, sy = ((y - rh.cam.y * f) % 480 + 480) % 480 - 120; if (sx < 0 || sx >= W || sy < 0 || sy >= H) continue; px(g, b > .85 ? '#ffffff' : k ? '#8a8ac8' : '#4a4a7a', sx, sy, k && b > .9 ? 2 : 1, 1); } });
-  vaCamPush(rh.mode === 'play' || rh.mode === 'pause' ? now : 0);
+  g.drawImage(VA_NEB, -160, -120);  // 2.0.0 : un ciel immobile, seul le chemin défile
+  VA_STARS.forEach((L, k) => { for (const [x, y, b] of L) { const sx = x - 160, sy = y - 120; if (sx < 0 || sx >= W || sy < 0 || sy >= H) continue; px(g, b > .85 ? '#ffffff' : k ? '#8a8ac8' : '#4a4a7a', sx, sy, k && b > .9 ? 2 : 1, 1); } });
+  g.save();
   // le chemin : un trait entre les dalles, puis les dalles (passées, à venir, la prochaine en or)
   const N = rh.notes, i0 = Math.max(0, P.i - 8), i1 = Math.min(N.length, P.i + 22);
   const tilePos = j => j < N.length ? [N[j].px + Math.cos(N[j].a) * VA.R, N[j].py + Math.sin(N[j].a) * VA.R] : null;
@@ -1227,6 +1220,7 @@ function vaDraw() {
     g.globalAlpha = fade; g.drawImage(vaTile(kind), cx + x - 8, cy + y - 8);
     const nx = N[j + 1]; if (nx?.twirl) for (let k = 0; k < 10; k++) px(g, '#ff8ad8', cx + x + Math.cos(k / 10 * Math.PI * 1.6 + 1) * 3.5 - .5, cy + y + Math.sin(k / 10 * Math.PI * 1.6 + 1) * 3.5 - .5, 1, 1);  // demi-tour : une boucle rose
     if (nx?.slow) for (let k = 0; k < 3; k++) px(g, '#6ac8ff', cx + x - 4 + k * 3, cy + y + 3, 2, 2);  // lent : trois points bleus
+    if (j && j % VA_CP === 0) { px(g, '#3a2a1a', cx + x - 1, cy + y - 14, 1, 12); px(g, j <= rh.cp ? '#7ee07a' : '#e8e8f0', cx + x, cy + y - 14, 6, 4); }  // un drapeau : la reprise après une partie perdue
     g.globalAlpha = 1;
   }
   // le cercle que suit l'astre, puis sa traînée, puis les deux astres (le soleil et la lune échangent leur rôle à chaque dalle)
@@ -1247,21 +1241,23 @@ function vaDraw() {
   }
   if (rh.mode === 'play' && now < 0) pxFont(g, String(Math.ceil(-now)), W / 2, 60, '#ffd84a', 16, 'center');
   rhScreens(60);
+  if (rh.mode === 'fail' && rh.tick - rh.failAt > 20) gameText(g, W, [['PERDU : ' + rh.failed + ' !', '#ff7a8a', 12], ['Arrivé à ' + rh.pct + ' % du morceau' + (rh.pctBest ? ' · record ' + rh.pctBest + ' %' : ''), '#ffffff'],
+    [rh.cp ? 'Espace : reprendre au drapeau (' + Math.floor(rh.cp / rh.notes.length * 100) + ' %)' : 'Espace : recommencer', '#ffd84a'], ...(rh.cp ? [['R : depuis le début', '#d8e0ff']] : [])], 80);
   if (rh.mode === 'over' && rh.tick - rh.overAt > 20) { vaFigure(); pxFont(g, (rh.from ? 'ENTRAÎNEMENT · ' : '') + 'SANS FAUTE ' + rh.pct + ' %' + (rh.pctBest ? ' · RECORD ' + rh.pctBest + ' %' : ''), W / 2, 190, '#c8d8ff', 6, 'center'); }
   if (rh.mode === 'ready' && +vaVal('vaFrom', 0)) pxFont(g, 'ENTRAÎNEMENT : DÉPART À ' + Math.round(+vaVal('vaFrom', 0) * 100) + ' %', W / 2, 200, '#6ac8ff', 7, 'center');
-  if (rh.tick % 15 === 0) cv.setAttribute('aria-label', 'Valse, ' + (rh.info?.name || '') + ' : ' + ({ready: 'prêt', load: 'chargement', play: 'en jeu', pause: 'pause', over: 'fini'}[rh.mode] || rh.mode) + ', score ' + rh.score + ', combo ' + rh.combo + ', ' +
+  if (rh.tick % 15 === 0) cv.setAttribute('aria-label', 'Valse, ' + (rh.info?.name || '') + ' : ' + ({ready: 'prêt', load: 'chargement', play: 'en jeu', pause: 'pause', over: 'fini', fail: 'perdu'}[rh.mode] || rh.mode) + ', score ' + rh.score + ', combo ' + rh.combo + ', ' +
     Object.entries(rh.counts).map(([k, v]) => k.toLowerCase() + ' ' + v).join(', ') + ', dalle ' + Math.min(P.i, N.length) + ' sur ' + N.length + '.');
 }
-cv.onpointerdown = e => { e.preventDefault(); if (!rh) return; if (rh.mode === 'play') vaHit(); else rhPress(); };
+cv.onpointerdown = e => { e.preventDefault(); if (!rh) return; if (rh.mode === 'play') vaHit(); else if (rh.mode === 'fail') vaRetry(true); else rhPress(); };
 document.addEventListener('keydown', e => {
   if (!keyOk(e) || !rh || e.ctrlKey || e.altKey || e.metaKey) return; const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
   if (k === 'p' || k === 'Escape') { rhPause(); return; }
+  if (rh.mode === 'fail') { if (k === ' ' || k === 'Enter' || k === 'r') { e.preventDefault(); if (!e.repeat) vaRetry(k !== 'r'); } return; }
   if (rh.mode === 'play') { if (k.length === 1 || k === 'Enter' || k.startsWith('Arrow')) { e.preventDefault(); if (!e.repeat) vaHit(); } return; }
   if (k === ' ' || k === 'Enter') { e.preventDefault(); if (!e.repeat) rhPress(); }
 });
 document.addEventListener('keyup', e => { if (e.key === ' ' && keyOk(e)) e.preventDefault(); });
-$('vaCamOn').addEventListener('change', () => { if (rh?.info) rh.camfx = vaVal('vaCamOn', '1') === '1' ? vaCamFx(rh.info, rh.c.len, (rh.c.step || .125) * 4) : null; });
-cv.__rh = {cam: t => vaCam(t), st: () => rh, finish: hist => { rh.hist = hist; rh.mode = 'play'; rhCheckEnd(1e9); }};  // pour le test « local »
+cv.__rh = {hit: t => vaHit(t), now: () => rhNow(), st: () => rh, finish: hist => { rh.hist = hist; rh.mode = 'play'; rhCheckEnd(1e9); }};  // pour le test « local »
 {  // la manette : la croix, A, B, X, Y et les gâchettes hautes frappent le temps, Start lance, Select met en pause
   const KEY = {14: 'd', 13: 'f', 12: 'j', 15: 'k', 2: 'd', 0: 'f', 3: 'j', 1: 'k', 4: 'd', 5: 'k', 9: ' ', 8: 'p'}, held = new Set();
   const send = (k, type) => document.dispatchEvent(new KeyboardEvent(type, {key: k, bubbles: true}));
@@ -1287,8 +1283,9 @@ cv.__rh = {cam: t => vaCam(t), st: () => rh, finish: hist => { rh.hist = hist; r
   const crowd = ts => { const ns = ts.map(t => ({t, lane: 0})); vaPath(ns, 1); const P = ns.map(n => [n.px, n.py]); let m = 1e9; for (let i = 0; i < P.length; i++) for (let j = i + 1; j < Math.min(P.length, i + 30); j++) m = Math.min(m, Math.hypot(P[i][0] - P[j][0], P[i][1] - P[j][1])); return m; };
   if (crowd(Array.from({length: 60}, (_, i) => i * .5)) < VA.R * .5 || crowd(Array.from({length: 60}, (_, i) => i * 2)) < VA.R * .9 || crowd(Array.from({length: 60}, (_, i) => Math.floor(i / 3) * 2 + (i % 3) * .5)) < VA.R * .5) bad.push('dalles qui se chevauchent');
   if (Math.abs(notes[2].py - notes[1].py) > 1e-6 || Math.abs(notes[2].px - notes[1].px - VA.R) > 1e-6) bad.push('demi-tour');
-  vaHit(.01); vaHit(1.08); vaHit(3); rh.notes[2].judged = rh.notes[2].missed = true;
-  if (rh.counts.PARFAIT !== 1 || rh.counts.BIEN !== 1 || rh.combo !== 2) bad.push('jugement ' + JSON.stringify(rh.counts));
+  rh.last = -9; rh.c = {step: .25}; vaHit(-5); vaHit(.01); vaHit(.03); vaHit(1.08);
+  if (rh.counts.PARFAIT !== 1 || rh.counts.BIEN !== 1 || rh.combo !== 2 || rh.mode !== 'play') bad.push('jugement ' + JSON.stringify(rh.counts));
+  vaHit(1.5); if (rh.mode !== 'fail' || rh.failed !== 'TROP TÔT' || !notes[2].missed) bad.push('trop tôt : ' + rh.mode);
   rh = keep;
   console.assert(!bad.length, 'valse', bad);
 }

@@ -6,11 +6,13 @@ A one-key rhythm game in the night sky: the sun and the moon spin around each ot
 
 ## How to play
 
-- **Any key** (letters, arrows, Enter) or a **click**: land the orb on the golden tile.
+- **Any key** (letters, arrows, Enter) or a **click**: land the orb on the golden tile, right when it touches it.
 - **Reading the path**: the orb spins half a turn per beat. A **straight line** lasts one beat, a **right angle** half a beat, a **sharp turn** a quarter of a beat.
 - **Three blue dots** on a tile: the orb spins slower there (a long pause in the music).
 - **A pink loop**: the orb changes its spinning direction.
-- A missed tile turns red, but the game goes on: the orb always follows the music.
+- **Too early or too late and you lose**: only the next tile counts, and an extra press in the beat before it loses the run. Tapping at random doesn't work. Two keys pressed almost together (under 60 ms) only count once.
+- **Flags**: every 32 tiles. After a lost run, **Space** restarts from the last flag passed (no record), **R** starts again from the beginning.
+- The camera follows the orb and the sky stays still: nothing gets in the way of reading the path.
 - **Space**: play · **P**: pause · **Full screen** during the game.
 
 ## Accuracy and points
@@ -27,11 +29,10 @@ The **Songs** tab has the 1200 Rythme tracks, in four difficulties (Easy, Normal
 
 In **My music**, create a level from an imported **audio file** or a track from your **NeoMusic** library: the game finds its tempo and strong beats and turns them into a level, at the chosen **difficulty** (1 to 10 stars).
 
-## Camera, practice and figure
+## Practice and figure
 
-- **Camera** (setting, Effects by default): every 8 bars, the camera zooms in, pulls back, slowly turns, sways or pulses on the beat. **Fixed** turns it off.
 - **Start** (practice): begin at 25, 50 or 75 % of the song to work on a passage. Earlier notes don't count, and nothing is kept as a record.
-- **Flawless**: the end screen gives the share of the song played before your first miss, and your record on this level.
+- **Progress**: when you lose, the screen gives the share of the song you reached, and your record on this level.
 - The end screen also shows **the figure drawn by the whole path**, cleared tiles in green and missed ones in red.
 
 ## Settings
@@ -49,6 +50,12 @@ Your scores and grades per level and your settings are stored by NeoDex, backed 
 In NeoDex: **NeoStore → Discover → Waltz → Install**.
 
 Building a plugin: see the [NeoDex SDK](https://github.com/NDesumeur/neodex-sdk).
+
+## What's new in version 2.0.0
+
+- The game is rebuilt around strict judging: too early or too late and the run is lost (before, you could tap at random and still finish).
+- Checkpoint flags every 32 tiles.
+- No more camera effects (zooms, rotations) or scrolling sky: only the path moves.
 
 ## What's new in version 1.1.0
 

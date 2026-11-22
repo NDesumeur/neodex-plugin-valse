@@ -6,11 +6,13 @@ Un jeu de rythme à une seule touche, dans le ciel de nuit : le soleil et la lun
 
 ## Comment jouer
 
-- **N'importe quelle touche** (lettres, flèches, Entrée) ou un **clic** : poser l'astre sur la dalle dorée.
+- **N'importe quelle touche** (lettres, flèches, Entrée) ou un **clic** : poser l'astre sur la dalle dorée, pile au moment où il la touche.
 - **Lire le chemin** : l'astre tourne d'un demi-tour par temps. Une **ligne droite** dure donc un temps, un **virage à angle droit** un demi-temps, un **virage serré** un quart de temps.
 - **Trois points bleus** sur une dalle : l'astre y tourne plus lentement (une longue pause dans la musique).
 - **Une boucle rose** : l'astre change de sens de rotation.
-- Une dalle ratée devient rouge, mais la partie continue : l'astre suit toujours la musique.
+- **Trop tôt ou trop tard, c'est perdu** : seule la prochaine dalle compte, et un appui en trop pendant le temps qui la précède perd la partie. Taper au hasard ne marche donc pas. Deux touches presque ensemble (moins de 60 ms) ne comptent qu'une fois.
+- **Drapeaux** : toutes les 32 dalles. Après une partie perdue, **Espace** reprend au dernier drapeau passé (sans record), **R** recommence depuis le début.
+- La caméra suit l'astre, le ciel ne bouge pas : rien ne gêne la lecture du chemin.
 - **Espace** : jouer · **P** : pause · **Plein écran** pendant la partie.
 
 ## Précision et points
@@ -27,11 +29,10 @@ L'onglet **Chansons** reprend les 1200 morceaux de Rythme, en quatre difficulté
 
 Dans **Mes musiques**, crée un niveau à partir d'un **fichier audio** importé ou d'une musique de ta bibliothèque **NeoMusic** : le jeu trouve son tempo et ses temps forts et en fait un niveau, à la **difficulté** choisie (1 à 10 étoiles).
 
-## Caméra, entraînement et figure
+## Entraînement et figure
 
-- **Caméra** (réglage, Effets par défaut) : toutes les 8 mesures, la caméra zoome, recule, tourne doucement, se balance ou pulse sur le temps. **Fixe** l'arrête.
 - **Départ** (entraînement) : commence à 25, 50 ou 75 % du morceau pour travailler un passage. Les notes d'avant ne comptent pas, et rien n'est gardé comme record.
-- **Sans faute** : l'écran de fin donne la part du morceau jouée avant ton premier raté, et ton record sur ce niveau.
+- **Avancée** : quand tu perds, l'écran donne la part du morceau atteinte, et ton record sur ce niveau.
 - L'écran de fin montre aussi **la figure dessinée par tout le chemin**, dalles réussies en vert et ratées en rouge.
 
 ## Réglages
@@ -49,6 +50,12 @@ Tes scores et notes par niveau et tes réglages sont enregistrés par NeoDex, sa
 Dans NeoDex : **NeoStore → À découvrir → Valse → Installer**.
 
 Développer un plugin : voir le [SDK NeoDex](https://github.com/NDesumeur/neodex-sdk).
+
+## Nouveautés de la version 2.0.0
+
+- Le jeu est refait autour d'un jugement strict : trop tôt ou trop tard, la partie est perdue (avant, on pouvait taper au hasard et finir quand même).
+- Drapeaux de reprise toutes les 32 dalles.
+- Plus d'effets de caméra (zooms, rotations) ni de ciel qui défile : seul le chemin bouge.
 
 ## Nouveautés de la version 1.1.0
 
